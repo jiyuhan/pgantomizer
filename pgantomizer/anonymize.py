@@ -61,7 +61,7 @@ def get_psql_db_args(db_args):
 
 def drop_schema(db_args):
     subprocess.run(
-        'PGPASSWORD={password} psql {db_args} -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" {redirect}'.format(
+        'PGPASSWORD={password} psql {db_args} -c "DROP SCHEMA txpserverschema CASCADE; CREATE SCHEMA txpserverschema;" {redirect}'.format(
             password=db_args.get('password'),
             db_args=get_psql_db_args(db_args),
             redirect='' if logging.getLogger().getEffectiveLevel() == logging.DEBUG else '>/dev/null 2>&1'),
@@ -130,10 +130,10 @@ def anonymize_db(schema, db_args):
     with psycopg2.connect(**db_args) as conn:
         with conn.cursor() as cursor:
             check_schema(cursor, schema, db_args)
-            cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
+            cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'txpserverschema';")
             for table_name in cursor.fetchall():
                 cursor.execute("SELECT column_name, data_type FROM information_schema.columns "
-                               "WHERE table_schema = 'public' AND table_name = '{}'".format(table_name[0]))
+                               "WHERE table_schema = 'txpserverschema' AND table_name = '{}'".format(table_name[0]))
                 for column_name, data_type in cursor.fetchall():
                     prepare_column_for_anonymization(conn, cursor, table_name[0], column_name, data_type)
                     anonymize_column(cursor, schema, table_name[0], column_name, data_type)

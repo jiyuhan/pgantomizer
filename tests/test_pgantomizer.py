@@ -62,7 +62,7 @@ def test_dump_and_load(original_db, anonymized):
 
     # Check if only the tables present in the schema YAML spec were dumped and loaded
     cursor = anonymized.cursor()
-    cursor.execute("SELECT tablename FROM pg_tables WHERE schemaname='public';")
+    cursor.execute("SELECT tablename FROM pg_tables WHERE schemaname='txpserverschema';")
     assert set(table[0] for table in cursor.fetchall()) == {'customer', 'customer_address'}
 
     # Check if customer table has all the records

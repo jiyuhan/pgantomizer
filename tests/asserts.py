@@ -16,7 +16,7 @@ def assert_address_anonymized(address, customer_id, address_line, country):
 
 def assert_db_empty(db):
     cursor = db.cursor()
-    cursor.execute("SELECT count(*) FROM pg_tables WHERE schemaname='public';")
+    cursor.execute("SELECT count(*) FROM pg_tables WHERE schemaname='txpserverschema';")
     assert cursor.fetchone()[0] == 0
 
 
